@@ -1,0 +1,72 @@
+//解析函数
+void extract_mqtt_info(const char *str, char *msg_id, char *ident, char *value)
+{
+    char *p = strchr(str, '{');
+    if(p == NULL) return;
+
+    /* ========== 1. 提取 id（兼容字符串和纯数字）========== */
+    char *id_tag = strstr(p, "\"id\"");
+    if(id_tag == NULL) return;
+    
+    char *id_start = id_tag + 4;          // 跳过 "id"
+    while(*id_start == ':' || *id_start == ' ' || *id_start == '\t') 
+        id_start++;                        // 跳过冒号和空白
+    
+    int has_quote = 0;
+    if(*id_start == '\"') {               // 判断是否有引号
+        has_quote = 1;
+        id_start++;
+    }
+    
+    char *id_end = id_start;
+    if(has_quote) {
+        id_end = strchr(id_start, '\"');   // 字符串：找到下一个引号
+    } else {
+        while(*id_end != ',' && *id_end != '}' && *id_end != ' ' && *id_end != '\0')
+            id_end++;                      // 数字：找到分隔符
+    }
+    
+    if(id_end == NULL || id_end == id_start) return;
+    
+    int id_len = id_end - id_start;
+    if(id_len >= 64) id_len = 63;
+    strncpy(msg_id, id_start, id_len);
+    msg_id[id_len] = '\0';
+
+    /* ========== 2. 提取标识符（如 LED）========== */
+    char *params = strstr(id_end, "\"params\"");
+    if(params == NULL) return;
+    
+    char *key_start = strchr(params, '{');
+    if(key_start == NULL) return;
+    key_start++;                           // 跳过 {
+    
+    while(*key_start == ' ' || *key_start == '\t' || *key_start == '\"') 
+        key_start++;                       // 跳过空白和引号
+    
+    char *key_end = key_start;
+    while(*key_end != '\"' && *key_end != ':' && *key_end != '\0')
+        key_end++;
+    
+    int key_len = key_end - key_start;
+    if(key_len >= 32) key_len = 31;
+    strncpy(ident, key_start, key_len);
+    ident[key_len] = '\0';
+
+    /* ========== 3. 提取 value（true/false/1/0）========== */
+    char *val_start = strchr(key_end, ':');
+    if(val_start == NULL) return;
+    val_start++;
+    
+    while(*val_start == ' ' || *val_start == '\t') 
+        val_start++;                       // 跳过空白
+    
+    char *val_end = val_start;
+    while(*val_end != ',' && *val_end != '}' && *val_end != '\0')
+        val_end++;
+    
+    int val_len = val_end - val_start;
+    if(val_len >= 32) val_len = 31;
+    strncpy(value, val_start, val_len);
+    value[val_len] = '\0';
+}

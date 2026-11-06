@@ -1,0 +1,4 @@
+AT+MQTTPUB=0,"$sys/FRfr9m3Ppg/OTA_Test_drive/thing/property/post","{\"id\":\"123\"\,\"version\":\"1.0\"\,\"params\":{\"LED\":{\"value\":true}}}",0,0
+
+AT+MQTTPUB=0,"$sys/FRfr9m3Ppg/OTA_Test_drive/thing/property/post","{\"id\":\"123\"\,\"version\":\"1.0\"\,\"params\":{\"count\":{\"value\":33}}}",0,0
+
