@@ -1,0 +1,198 @@
+/* 动态科技背景：固定视口，位于内容之后，不影响点击与表单。 */
+
+.tech-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 90;
+  height: 2px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--teal), var(--amber));
+  box-shadow: 0 0 14px rgba(14, 107, 88, 0.5);
+  pointer-events: none;
+}
+
+[data-theme='dark'] .scroll-progress {
+  box-shadow: 0 0 14px rgba(75, 201, 171, 0.5);
+}
+
+.tech-background canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+}
+
+.tech-background::before {
+  content: '';
+  position: absolute;
+  top: -34vmax;
+  right: -28vmax;
+  width: 74vmax;
+  height: 74vmax;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(14, 107, 88, 0.08) 18deg,
+    transparent 46deg
+  );
+  animation: tech-radar-spin 46s linear infinite;
+}
+
+.tech-background::after {
+  content: '';
+  position: absolute;
+  top: 12vh;
+  left: -12vmax;
+  width: 56vmax;
+  height: 56vmax;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(14, 107, 88, 0.07), transparent 66%);
+  animation: tech-float 22s ease-in-out infinite alternate;
+}
+
+.tech-scan {
+  position: absolute;
+  top: -38vh;
+  right: 0;
+  left: 0;
+  height: 38vh;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(14, 107, 88, 0.085),
+    transparent
+  );
+  animation: tech-scan 11s linear infinite;
+}
+
+[data-theme='dark'] .tech-background::before {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(75, 201, 171, 0.14) 18deg,
+    transparent 46deg
+  );
+}
+
+[data-theme='dark'] .tech-background::after {
+  background: radial-gradient(circle, rgba(75, 201, 171, 0.11), transparent 66%);
+}
+
+[data-theme='dark'] .tech-scan {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(75, 201, 171, 0.12),
+    transparent
+  );
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes tech-radar-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes tech-scan {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(140vh);
+  }
+}
+
+@keyframes tech-float {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(6vw, 5vh, 0) scale(1.12);
+  }
+}
+
+/* 输入卡片的鼠标 3D 浮起；只改变视觉，不参与任何业务逻辑。 */
+
+.form-panel,
+.comm-input-card {
+  position: relative;
+  transform: perspective(1200px) rotateX(var(--tilt-rx, 0deg))
+    rotateY(var(--tilt-ry, 0deg)) translateY(0) scale(1);
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+  transition:
+    transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.45s ease,
+    background-color 0.45s ease;
+}
+
+.form-panel.is-tilting,
+.comm-input-card.is-tilting {
+  z-index: 3;
+  transform: perspective(1200px) rotateX(var(--tilt-rx, 0deg))
+    rotateY(var(--tilt-ry, 0deg)) translateY(-4px) scale(1.004);
+  background-image: radial-gradient(
+    420px circle at var(--tilt-glow-x, 50%) var(--tilt-glow-y, 50%),
+    rgba(14, 107, 88, 0.1),
+    transparent 60%
+  );
+  box-shadow:
+    0 2px 0 rgba(23, 35, 31, 0.03),
+    0 34px 70px -38px rgba(14, 107, 88, 0.55),
+    0 0 0 1px rgba(14, 107, 88, 0.14);
+  transition:
+    transform 0.08s linear,
+    box-shadow 0.25s ease,
+    background-color 0.3s ease;
+}
+
+[data-theme='dark'] .form-panel.is-tilting,
+[data-theme='dark'] .comm-input-card.is-tilting {
+  background-image: radial-gradient(
+    420px circle at var(--tilt-glow-x, 50%) var(--tilt-glow-y, 50%),
+    rgba(75, 201, 171, 0.12),
+    transparent 60%
+  );
+  box-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.25),
+    0 34px 70px -38px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(75, 201, 171, 0.2);
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .form-panel,
+  .comm-input-card,
+  .form-panel.is-tilting,
+  .comm-input-card.is-tilting {
+    transform: none;
+    background-image: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tech-background::before,
+  .tech-background::after,
+  .tech-scan {
+    animation: none;
+  }
+
+  .tech-scan {
+    display: none;
+  }
+}

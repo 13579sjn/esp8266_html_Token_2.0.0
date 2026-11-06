@@ -1,0 +1,214 @@
+/* 双屏工作台：密钥页 / 报文页、顶部切换、浮空输入与 3D 响应。 */
+
+/* 顶部工作台切换始终可用 */
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  background: var(--paper);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(16px);
+}
+
+.view-switch {
+  --switch-w: 54px;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, var(--switch-w));
+  padding: 3px;
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+
+.view-switch-thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: var(--switch-w);
+  border-radius: 999px;
+  background: var(--teal);
+  box-shadow: 0 6px 16px -8px rgba(14, 107, 88, 0.7);
+  transition: transform 0.34s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.view-switch.is-data .view-switch-thumb {
+  transform: translateX(var(--switch-w));
+}
+
+.view-switch button {
+  position: relative;
+  z-index: 1;
+  width: var(--switch-w);
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.view-switch button.is-active {
+  color: #f7fffb;
+}
+
+.view-switch button:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+  border-radius: 999px;
+}
+
+/* 两屏都保持挂载，只切换显示；输入和生成结果保留 */
+.view-stage {
+  position: relative;
+}
+
+.view-screen {
+  min-width: 0;
+}
+
+.view-screen[hidden] {
+  display: none !important;
+}
+
+.data-view .data-comm {
+  margin-top: 0;
+}
+
+/* 3D 装配线固定在自己的初始文档位置，不随页面滚动悬浮。 */
+.data-forge {
+  height: 260px;
+}
+
+.data-forge:fullscreen {
+  position: fixed;
+  inset: 0;
+}
+
+.data-forge[data-mode='data'] .forge-led {
+  background: #e8bd6d;
+  box-shadow: 0 0 9px rgba(232, 189, 109, 0.9);
+}
+
+.data-forge[data-mode='data'] .forge-title strong {
+  color: #ffe7bd;
+}
+
+.data-forge[data-mode='data'] .forge-status {
+  color: #d7b578;
+}
+
+.forge-status {
+  max-width: min(360px, 55vw);
+  overflow: hidden;
+  color: #79a897;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-style: normal;
+  letter-spacing: 0.07em;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+/* 每个参数区域独立浮空；聚焦时暂停浮动并抬起 */
+@media (prefers-reduced-motion: no-preference) {
+  .form-panel .field {
+    animation: field-float 8s ease-in-out infinite;
+  }
+
+  .form-panel .field:nth-child(2n) {
+    animation-delay: -1.5s;
+  }
+
+  .form-panel .field:nth-child(3n) {
+    animation-delay: -2.8s;
+  }
+
+  .form-panel .field:nth-child(5n) {
+    animation-delay: -4.1s;
+  }
+}
+
+.form-panel .field {
+  position: relative;
+  transition:
+    transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.32s ease;
+}
+
+.form-panel .field:hover,
+.form-panel .field:focus-within {
+  z-index: 2;
+  animation: none;
+  transform: translateY(-4px);
+}
+
+.form-panel .field:hover .input,
+.form-panel .field:focus-within .input {
+  box-shadow:
+    0 18px 30px -26px rgba(14, 107, 88, 0.7),
+    0 0 0 1px rgba(14, 107, 88, 0.08);
+}
+
+@keyframes field-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -3px, 0);
+  }
+}
+
+@media (max-width: 900px) {
+  .data-forge {
+    height: 230px;
+  }
+}
+
+@media (max-width: 720px) {
+  .masthead-meta {
+    gap: 8px;
+  }
+
+  .local-badge {
+    display: none;
+  }
+
+  .view-switch {
+    --switch-w: 46px;
+  }
+
+  .data-forge {
+    height: 210px;
+  }
+
+  .forge-status {
+    max-width: 190px;
+    font-size: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .view-switch-thumb {
+    transition: none;
+  }
+
+  .form-panel .field {
+    animation: none;
+    transition: none;
+  }
+
+  .form-panel .field:hover,
+  .form-panel .field:focus-within {
+    transform: none;
+  }
+}
