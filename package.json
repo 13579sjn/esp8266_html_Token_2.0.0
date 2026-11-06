@@ -1,0 +1,36 @@
+{
+  "name": "onenet-token-generator",
+  "private": true,
+  "version": "1.0.0",
+  "description": "OneNET MQTT 设备鉴权 Token 生成器，全部计算在浏览器本地完成",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "start": "node scripts/serve-dist.mjs",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@fontsource/ibm-plex-sans-condensed": "^5.3.0",
+    "@noble/hashes": "^2.4.0",
+    "gsap": "^3.15.0",
+    "motion": "^14.6.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.186.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.7",
+    "vitest": "^5.0.5"
+  }
+}
